@@ -7,7 +7,7 @@
 
 ### AWS VM
 * Clone a VM with decent configuration (at least t2.medium size)
-* Make sure that follow ports are opened in security group: SSH (22), MongoDB (27027), PostgresDB (5432), Tail Server (6543), Agent groups (5000, 10000, 10001)
+* Make sure that follow ports are opened in security group: SSH (22), MongoDB (27027), PostgresDB (5432), Tail Server (6543), Holder Agent ports (5001, 10001), User Controller (8081), User Manager (8080)
 
 ### Install Docker
 ```
