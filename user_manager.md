@@ -104,20 +104,20 @@ POST <IP/base_url>:8080/user/onboard
 #### Request
 ```
 {
-    "name": "<user_name>",
-    "email": "<user_email>",
-    "phone_number": "<user_phone>",
-    "age": 40
+  "name": "string",
+  "email": "string",
+  "phone_number": "string",
+  "age": 0
 }
 ```
 #### Response
 ```
 {
-    "id": "SBP7wtxXGgYcxd9ebM4AJy",
-    "name": "BaaJ-User",
-    "email": "konda.kalyan@gmail.com",
-    "phone_number": "+917675025060",
-    "age": 40
+  "id": "string",
+  "name": "string",
+  "email": "string",
+  "phone_number": "string",
+  "age": 0
 }
 ```
 
@@ -135,43 +135,26 @@ POST <IP/base_url>:8080/credential/request-credential
 #### Request
 ```
 {
-	  "user_id": "<user_id>",
-	  "name": "<user_name>",
-	  "email": "<user_email>",
-	  "issuer_name": "<issuer_name>",
-	  "issuer_id": "<issuer_id>",
-	  "schema_name": "<schema_name>",
-	  "schema_version": "<schema_version>",
-	  "schema_id": "<schema_id>",
-	  "credential_data": [
-		{
-		  "name": "Name",
-		  "value": "BaaJ-User"
-		},
-		{
-		  "name": "Email",
-		  "value": "konda.kalyan@gmail.com"
-		},
-		{
-		  "name": "Phone Number",
-		  "value": "+911234567890"
-		},
-		{
-		  "name": "Date Of Birth",
-		  "value": "16-Jul-1981"
-		}
-	  ]
-	}
+  "user_id": "string",
+  "name": "string",
+  "email": "string",
+  "credential_data": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ],
+  "request_id": "string",
+  "issuer_name": "string",
+  "issuer_id": "string",
+  "schema_name": "string",
+  "schema_version": "string",
+  "schema_id": "string"
+}
 ```
 #### Response
 ```
-{
-    "id": "SBP7wtxXGgYcxd9ebM4AJy",
-    "name": "BaaJ-User",
-    "email": "konda.kalyan@gmail.com",
-    "phone_number": "+917675025060",
-    "age": 40
-}
+UUID
 ```
 
 ### Retrives User's Crednetials
@@ -188,5 +171,28 @@ GET <IP/base_url>:8080/credential/retrieve-credentials/email/{user_email}
 ```
 #### Response
 ```
-
+[
+  {
+    "errorMsg": "string",
+    "request_id": "string",
+    "user_id": "string",
+    "name": "string",
+    "email": "string",
+    "status": "string",
+    "credential_id": "string",
+    "credential_data": [
+      {
+        "name": "string",
+        "value": "string"
+      }
+    ],
+    "created_at": "2024-10-13T08:06:02.971Z",
+    "last_updated_at": "2024-10-13T08:06:02.971Z",
+    "issuer_name": "string",
+    "issuer_id": "string",
+    "schema_name": "string",
+    "schema_version": "string",
+    "schema_id": "string"
+  }
+]
 ```
