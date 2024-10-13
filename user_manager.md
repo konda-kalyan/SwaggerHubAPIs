@@ -179,8 +179,8 @@ POST <IP/base_url>:8080/credential/request-credential
 * Couple of read/get operations to retrieve User’s Credentials for given name or email.
 #### Endpoint
 ```
-GET <IP/base_url>:8080/retrieve-credentials/name/{user_name}
-GET <IP/base_url>:8080/retrieve-credentials/name/{user_email}
+GET <IP/base_url>:8080/credential/retrieve-credentials/name/{user_name}
+GET <IP/base_url>:8080/credential/retrieve-credentials/email/{user_email}
 ```
 #### Request
 ```
