@@ -3,7 +3,7 @@
 * Also manages Users Credentials. Request Issuers to issue the Credentials.
 * Retrieves Credentials from Users Wallet Store.
 
-## Prerequisites Softwares
+## Prerequisite Softwares
 
 ### AWS VM
 * Clone a VM with decent configuration (at least t2.medium size)
@@ -61,6 +61,63 @@ docker logs -f holder_aries_agent;
 ### Blockchain Network
 In our echo system, we are using open source BCovrin Test network.
 
+### User Controller Application
+Build the application
+```
+mvn clean install;
+docker build -t didvc-user-controller .;
+```
+
+Run/Bringup the application
+```
+docker stop didvc-user-controller; docker rm didvc-user-controller;
+docker run -d --name didvc-user-controller -p 8081:8081 -v /home/ubuntu/logs/DIDVCUserControllerLogs:/logs -e server.port=8081 -e aries.agent.api.endpoint.base.url="<VM's URL/Public-IP>:5001" -e spring.data.mongodb.host="<VM's URL/Public-IP>" -e issuer.did-vc.controller.api.endpoint.base.url="<VM's URL/Public-IP>:9091" -e user.manaer.api.endpoint.base.url="<VM's URL/Public-IP>:8080" didvc-user-controller;
+docker logs -f didvc-user-controller;
+```
+
+## Bringup User Manager Application
+Build the application
+```
+cd UserManager; 
+mvn clean install;
+docker build -t user-manager .;
+```
+
+Run/Bringup the application
+```
+docker stop user-manager; docker rm user-manager;
+docker run -d --name user-manager -p 8080:8080 -v /home/ubuntu/logs/UserManagerLogs:/logs -e server.port=8080 -e spring.data.mongodb.host="<VM's URL/Public-IP>" -e user.did-vc.controller.api.endpoint.base.url="<VM's URL/Public-IP>:8081" user-manager;
+docker logs -f user-manager;
+```
+
 ## Technical Flows/APIs
 
 ### Onboard/Signup User
+#### Flow
+* Creates User account onto Baaj’s system. It expects User’s basic details such as Name, Email, Phone etc.
+* Internally it creates DID and Wallet on Agent layer User.
+* Stores User details on Users Wallet Store.
+#### Endpoint
+```
+Users Manager – POST <IP/base_url>:8080/user/onboard
+```
+#### Request
+```
+{
+    "name": "<user_name>",
+    "email": "<user_email>",
+    "phone_number": "<user_phone>",
+    "age": 40
+}
+```
+#### Response
+```
+{
+    "id": "SBP7wtxXGgYcxd9ebM4AJy",
+    "name": "Kalyan - User - 2024-Oct",
+    "email": "konda.kalyan@gmail.com",
+    "phone_number": "+917675025060",
+    "age": 40
+}
+```
+
