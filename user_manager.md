@@ -99,7 +99,7 @@ docker logs -f user-manager;
 * Stores User details on Users Wallet Store.
 #### Endpoint
 ```
-Users Manager – POST <IP/base_url>:8080/user/onboard
+POST <IP/base_url>:8080/user/onboard
 ```
 #### Request
 ```
@@ -114,10 +114,79 @@ Users Manager – POST <IP/base_url>:8080/user/onboard
 ```
 {
     "id": "SBP7wtxXGgYcxd9ebM4AJy",
-    "name": "Kalyan - User - 2024-Oct",
+    "name": "BaaJ-User",
     "email": "konda.kalyan@gmail.com",
     "phone_number": "+917675025060",
     "age": 40
 }
 ```
 
+### Request Credential
+#### Flow
+* This is asynchronous operation.
+* User requests particular Issuer to issue Credentials based on claims provided.
+* Issuer verifies User’s claims and issues VC. Issue can take their own time from minutes to days/weeks. In our PoC, it is assumed that Issuer is always agreed to issue Credential.
+* Credential details get stored on both User’s and Issuer's stores.
+
+#### Endpoint
+```
+POST <IP/base_url>:8080/credential/request-credential
+```
+#### Request
+```
+{
+	  "user_id": "<user_id>",
+	  "name": "<user_name>",
+	  "email": "<user_email>",
+	  "issuer_name": "<issuer_name>",
+	  "issuer_id": "<issuer_id>",
+	  "schema_name": "<schema_name>",
+	  "schema_version": "<schema_version>",
+	  "schema_id": "<schema_id>",
+	  "credential_data": [
+		{
+		  "name": "Name",
+		  "value": "BaaJ-User"
+		},
+		{
+		  "name": "Email",
+		  "value": "konda.kalyan@gmail.com"
+		},
+		{
+		  "name": "Phone Number",
+		  "value": "+911234567890"
+		},
+		{
+		  "name": "Date Of Birth",
+		  "value": "16-Jul-1981"
+		}
+	  ]
+	}
+```
+#### Response
+```
+{
+    "id": "SBP7wtxXGgYcxd9ebM4AJy",
+    "name": "BaaJ-User",
+    "email": "konda.kalyan@gmail.com",
+    "phone_number": "+917675025060",
+    "age": 40
+}
+```
+
+### Retrives User's Crednetials
+#### Flow
+* Couple of read/get operations to retrieve User’s Credentials for given name or email.
+#### Endpoint
+```
+GET <IP/base_url>:8080/retrieve-credentials/name/{user_name}
+GET <IP/base_url>:8080/retrieve-credentials/name/{user_email}
+```
+#### Request
+```
+<Nonthing>
+```
+#### Response
+```
+
+```
