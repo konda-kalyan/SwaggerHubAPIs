@@ -10,7 +10,7 @@
 
 ### AWS VM
 * Clone a VM with decent configuration (at least t2.medium size)
-* Make sure that follow ports are opened in security group: SSH (22), MongoDB (27027), PostgresDB (5432), Tail Server (6543), Isser and Verifier Agent ports (5002, 10002, 5000, 10000)
+* Make sure that follow ports are opened in security group: SSH (22), MongoDB (27027), PostgresDB (5432), Tail Server (6543), Isser and Verifier Agent ports (5002, 10002, 5000, 10000), Issuer Controller (9091), Verifier Controller (7071), Partners Manager (9090)
 
 ### Install Docker
 ```
@@ -64,7 +64,7 @@ docker logs -f issuer_aries_agent;
 ### Verifier Aries Agent
 ```
 docker stop verifier_aries_agent; docker rm verifier_aries_agent;
-docker run -d --name verifier_aries_agent -p 5000:5000 -p 10000:10000 kondakalyan/aca-py-connectionless-issuance start -it http 0.0.0.0 10000 -ot http --admin 0.0.0.0 5000 -e "<VM's URL/Public-IP>:10000" --multitenant --multitenant-admin --jwt-secret multitenancysecret12 --admin-api-key agentsecretapikey --wallet-type askar --seed 0000000baajidaasprojecttrueid111 --genesis-url "http://test.bcovrin.vonx.io/genesis" --label 'Verifier Agent' --auto-provision --log-level info --auto-respond-messages --auto-accept-invites --auto-accept-requests --auto-respond-credential-offer --auto-respond-credential-request --auto-verify-presentation --auto-respond-presentation-request --auto-store-credential --preserve-exchange-records --wallet-name IDaaSVerifierWallet-Askar --wallet-key dicept_key --tails-server-base-url "<VM's URL/Public-IP>:6543" --webhook-url "<VM's URL/Public-IP>:7071/webhooks" --wallet-storage-type postgres_storage --wallet-storage-config '{"url":"13.127.169.103:5432","wallet_scheme":"DatabasePerWallet"}' --wallet-storage-creds '{"account":"myverifier","password":"Myverifier567","admin_account":"myverifier","admin_password":"Myverifier567"}';
+docker run -d --name verifier_aries_agent -p 5000:5000 -p 10000:10000 kondakalyan/aca-py-connectionless-issuance start -it http 0.0.0.0 10000 -ot http --admin 0.0.0.0 5000 -e "<VM's URL/Public-IP>:10000" --multitenant --multitenant-admin --jwt-secret multitenancysecret12 --admin-api-key agentsecretapikey --wallet-type askar --seed 0000000baajidaasprojecttrueid111 --genesis-url "http://test.bcovrin.vonx.io/genesis" --label 'Verifier Agent' --auto-provision --log-level info --auto-respond-messages --auto-accept-invites --auto-accept-requests --auto-respond-credential-offer --auto-respond-credential-request --auto-verify-presentation --auto-respond-presentation-request --auto-store-credential --preserve-exchange-records --wallet-name IDaaSVerifierWallet-Askar --wallet-key dicept_key --tails-server-base-url "<VM's URL/Public-IP>:6543" --webhook-url "<VM's URL/Public-IP>:7071/webhooks" --wallet-storage-type postgres_storage --wallet-storage-config '{"url":"<VM's URL/Public-IP>:5432","wallet_scheme":"DatabasePerWallet"}' --wallet-storage-creds '{"account":"myverifier","password":"Myverifier567","admin_account":"myverifier","admin_password":"Myverifier567"}';
 docker logs -f verifier_aries_agent;
 ```
 ### Blockchain Network
@@ -79,7 +79,7 @@ docker build -t didvc-issuer-controller .;
 Run/Bringup the application
 ```
 docker stop didvc-issuer-controller; docker rm didvc-issuer-controller;
-docker run -d --name didvc-issuer-controller -p 9091:9091 -v /home/ubuntu/logs/DIDVCIssuerControllerLogs:/logs -e server.port=9091 -e aries.agent.api.endpoint.base.url="<VM's URL/Public-IP>:5002" -e spring.data.mongodb.host="13.127.169.103" -e user.did-vc.controller.api.endpoint.base.url="<VM's URL/Public-IP>:8081" -e tail.server.url="<VM's URL/Public-IP>:6543" didvc-issuer-controller;
+docker run -d --name didvc-issuer-controller -p 9091:9091 -v /home/ubuntu/logs/DIDVCIssuerControllerLogs:/logs -e server.port=9091 -e aries.agent.api.endpoint.base.url="<VM's URL/Public-IP>:5002" -e spring.data.mongodb.host="<VM's URL/Public-IP>" -e user.did-vc.controller.api.endpoint.base.url="<VM's URL/Public-IP>:8081" -e tail.server.url="<VM's URL/Public-IP>:6543" didvc-issuer-controller;
 docker logs -f didvc-issuer-controller;
 ```
 ### Verifier Controller Application
@@ -91,23 +91,21 @@ docker build -t didvc-verifier-controller .;
 Run/Bringup the application
 ```
 docker stop didvc-verifier-controller; docker rm didvc-verifier-controller;
-docker run -d --name didvc-verifier-controller -p 7071:7071 -v /home/ubuntu/logs/DIDVCVerifierControllerLogs:/logs -e server.port=7071 -e aries.agent.api.endpoint.base.url="<VM's URL/Public-IP>:5000" -e spring.data.mongodb.host="13.127.169.103" -e user.did-vc.controller.api.endpoint.base.url="<VM's URL/Public-IP>:8081" -e tail.server.url="<VM's URL/Public-IP>:6543" didvc-verifier-controller;
+docker run -d --name didvc-verifier-controller -p 7071:7071 -v /home/ubuntu/logs/DIDVCVerifierControllerLogs:/logs -e server.port=7071 -e aries.agent.api.endpoint.base.url="<VM's URL/Public-IP>:5000" -e spring.data.mongodb.host="<VM's URL/Public-IP>" -e user.did-vc.controller.api.endpoint.base.url="<VM's URL/Public-IP>:8081" -e tail.server.url="<VM's URL/Public-IP>:6543" didvc-verifier-controller;
 docker logs -f didvc-verifier-controller;
 ```
 
-## Bringup User Manager Application
+## Bringup Partners Manager Application
 Build the application
 ```
-cd UserManager; 
 mvn clean install;
-docker build -t user-manager .;
+docker build -t partners-manager .;
 ```
-
 Run/Bringup the application
 ```
-docker stop user-manager; docker rm user-manager;
-docker run -d --name user-manager -p 8080:8080 -v /home/ubuntu/logs/UserManagerLogs:/logs -e server.port=8080 -e spring.data.mongodb.host="<VM's URL/Public-IP>" -e user.did-vc.controller.api.endpoint.base.url="<VM's URL/Public-IP>:8081" user-manager;
-docker logs -f user-manager;
+docker stop partners-manager; docker rm partners-manager;
+docker run -d --name partners-manager -p 9090:9090 -v /home/ubuntu/logs/PartnersManagerLogs:/logs -e server.port=9090 -e spring.data.mongodb.host="<VM's URL/Public-IP>" -e issuer.did-vc.controller.api.endpoint.base.url="<VM's URL/Public-IP>:9091" -e verifier.did-vc.controller.api.endpoint.base.url="<VM's URL/Public-IP>:7071" partners-manager;
+docker logs -f partners-manager;
 ```
 
 ## Technical Flows/APIs
