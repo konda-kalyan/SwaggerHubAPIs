@@ -110,36 +110,35 @@ docker logs -f partners-manager;
 
 ## Technical Flows/APIs
 
-### Onboard/Signup User
+### Onboard Issuer
 #### Flow
-* Creates User account onto Baaj’s system. It expects User’s basic details such as Name, Email, Phone etc.
+* Onboard Issuer onto Baaj’s system. It expects Issuer’s basic details such as Name, Email, Phone etc.
 * Internally it creates DID and Wallet on Agent layer User.
-* Stores User details on Users Wallet Store.
+* Register Issuer on Blockchain network.
+* Stores Issuer details on Partners Wallet Store.
 #### Endpoint
 ```
-POST <IP/base_url>:8080/user/onboard
+Partners Manager – POST <IP/base_url>:9090/issuer/onboard
 ```
 #### Request
 ```
 {
-    "name": "<user_name>",
-    "email": "<user_email>",
-    "phone_number": "<user_phone>",
-    "age": 40
+  "name": "string",
+  "email": "string",
+  "phone_number": "string"
 }
 ```
 #### Response
 ```
 {
-    "id": "SBP7wtxXGgYcxd9ebM4AJy",
-    "name": "BaaJ-User",
-    "email": "konda.kalyan@gmail.com",
-    "phone_number": "+917675025060",
-    "age": 40
+  "id": "string",
+  "name": "string",
+  "email": "string",
+  "phone_number": "string"
 }
 ```
 
-### Request Credential
+### Onboard Verifier
 #### Flow
 * This is asynchronous operation.
 * User requests particular Issuer to issue Credentials based on claims provided.
@@ -148,63 +147,113 @@ POST <IP/base_url>:8080/user/onboard
 
 #### Endpoint
 ```
-POST <IP/base_url>:8080/credential/request-credential
+POST <IP/base_url>:9090/verifier/onboard
 ```
 #### Request
 ```
 {
-	  "user_id": "<user_id>",
-	  "name": "<user_name>",
-	  "email": "<user_email>",
-	  "issuer_name": "<issuer_name>",
-	  "issuer_id": "<issuer_id>",
-	  "schema_name": "<schema_name>",
-	  "schema_version": "<schema_version>",
-	  "schema_id": "<schema_id>",
-	  "credential_data": [
-		{
-		  "name": "Name",
-		  "value": "BaaJ-User"
-		},
-		{
-		  "name": "Email",
-		  "value": "konda.kalyan@gmail.com"
-		},
-		{
-		  "name": "Phone Number",
-		  "value": "+911234567890"
-		},
-		{
-		  "name": "Date Of Birth",
-		  "value": "16-Jul-1981"
-		}
-	  ]
-	}
+  "name": "string",
+  "email": "string",
+  "phone_number": "string"
+}
 ```
 #### Response
 ```
 {
-    "id": "SBP7wtxXGgYcxd9ebM4AJy",
-    "name": "BaaJ-User",
-    "email": "konda.kalyan@gmail.com",
-    "phone_number": "+917675025060",
-    "age": 40
+  "id": "string",
+  "name": "string",
+  "email": "string",
+  "phone_number": "string"
 }
 ```
 
-### Retrives User's Crednetials
+### Create Credential Schema
 #### Flow
-* Couple of read/get operations to retrieve User’s Credentials for given name or email.
+* Isser creates Credential Schema on Agent wallet.
+* Register Schema info on Ledger.
+* Stores Schema details on Partners Issuers store.
+  
 #### Endpoint
 ```
-GET <IP/base_url>:8080/credential/retrieve-credentials/name/{user_name}
-GET <IP/base_url>:8080/credential/retrieve-credentials/email/{user_email}
+POST <IP/base_url>:9090/schema
 ```
 #### Request
 ```
-<Nonthing>
+{
+  "issuer_id": "string",
+  "name": "string",
+  "version": "string",
+  "attributes": [
+    "string"
+  ]
+}
 ```
 #### Response
 ```
-
+{
+  "id": "string",
+  "issuer_id": "string",
+  "name": "string",
+  "version": "string",
+  "seqNo": "string",
+  "attributes": [
+    "string"
+  ],
+  "created_at": "2024-10-13T08:10:50.729Z",
+  "cred_def_id": "string",
+  "cred_def_tag": "string",
+  "rev_reg_id": "string"
+}
+```
+### Verify Credential
+#### Flow
+* This is asynchronous operation.
+* Verifies Credential from User.
+* Verifier can mention what kind of Credential (Example: I want to verify Name and Address from Driver’s License which was issued by State Government) that it wants to verify.
+  
+#### Endpoint
+```
+POST <IP/base_url>:9090/verification/verify-credential
+```
+#### Request
+```
+{
+  "user_email": "string",
+  "proof_request": {
+    "requested_attributes": {
+      "additionalProp1": {
+        "name": "string",
+        "restrictions": [
+          {
+            "additionalProp1": "string",
+            "additionalProp2": "string",
+            "additionalProp3": "string"
+          }
+        ]
+      }
+    },
+    "requested_predicates": {
+      "additionalProp1": {
+        "name": "string",
+        "p_type": "string",
+        "p_value": 0,
+        "restrictions": [
+          {
+            "additionalProp1": "string",
+            "additionalProp2": "string",
+            "additionalProp3": "string"
+          }
+        ]
+      } 
+  },
+  "special_verification": true,
+  "special_attribute": "string",
+  "special_condition": "string",
+  "special_comparision_value": "string",
+  "request_id": "string"
+}
+```
+#### Response
+```
+UUID
 ```
